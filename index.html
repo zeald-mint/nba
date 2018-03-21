@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="ui/classes/core.js"></script>
+    <script src="ui/classes/template.js"></script>
+    <script src="ui/classes/workspace.js"></script>
+    <script src="ui/classes/team.js"></script>
+    <script src="ui/classes/player.js"></script>
+    <style type="text/css">
+        body, select, input, textarea {
+            font: normal 16px Helvetica, Arial;
+        }
+        h1:first-child {
+            margin-top: 0;
+        }
+        section {
+            padding: 20px;
+        }
+        section.filter {
+            border: solid 1px #ccc;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        section h1 {
+            font-size: 1.2em;
+            margin: 0 5px 0 0;
+            display: inline-block;
+        }
+        section.teams {
+            background: #efefef;
+        }
+        article.team {
+            width: 250px;
+            padding: 25px;
+            margin-right: 20px;
+            margin-bottom: 20px;
+            background: #fff;
+            float: left;
+        }
+        article.team h1 {
+            margin: 0;
+        }
+        .players {
+            list-style: none;
+            padding: 0px;
+        }
+        .players li {
+            width: 100%;
+            margin: 5px 0;
+            padding: 0 0 10px;
+            position: relative;
+        }
+        .player .points {
+            width: 50px;
+            font-size: 22px;
+            font-weight: bold;
+            text-align: right;
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+        select, input, textarea {
+            padding: 5px;
+        }
+        section.teams:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+        .player h3 {
+            font-size: 16px;
+            margin: 0;
+        }
+        .player .position {
+            font-size: 0.8em;
+        }
+    </style>
+    <script type="text/template" id="template-team">
+        <article class="team">
+            <h1 class="team-name"></h1>
+            <ul class="players">
+            </ul>
+        </article>
+    </script>
+    <script type="text/template" id="template-player">
+        <li class="player">
+            <aside class="points"></aside>
+            <h3 class="player-name"></h3>
+            <aside class="position"></aside>
+        </li>
+    </script>
+    <script type="text/javascript">
+        var teamData = {
+            '1': {
+                name: 'Portland Trail Blazers',
+                players: [
+                    {'player-name': 'Portland player 1', points: 1881, position: 'Small Forward'},
+                    {'player-name': 'Portland player 2', points: 871, position: 'Point Guard'},
+                    {'player-name': 'Portland player 3', points: 188, position: 'Power Forward'},
+                ],
+            },
+            '2': {
+                name: 'Los Angeles Lakers',
+                players: [
+                    {'player-name': 'Los Angeles player 1', points: 1881, position: 'Small Forward'},
+                    {'player-name': 'Los Angeles player 2', points: 188, position: 'Small Forward'},
+                    {'player-name': 'Los Angeles player 3', points: 752, position: 'Point Guard'},
+                ]
+            },
+            '3': {
+                name: 'Golden State Warriors',
+                players: [
+                    {'player-name': 'Golden State player 1', points: 81, position: 'Small Forward'},
+                    {'player-name': 'Golden State player 2', points: 130, position: 'Small Forward'},
+                    {'player-name': 'Golden State player 3', points: 11, position: 'Point Guard'},
+                ]
+            },
+            '4': {
+                name: 'Dallas Mavericks',
+                players: [
+                    {'player-name': 'Dallas player 1', points: 121, position: 'Small Forward'},
+                    {'player-name': 'Dallas player 2', points: 1851, position: 'Power Forward'},
+                    {'player-name': 'Dallas player 3', points: 81, position: 'Small Forward'},
+                ]
+            },
+            '5': {
+                name: 'Houston Rockets',
+                players: [
+                    {'player-name': 'Houston player 1', points: 1881, position: 'Point Guard'},
+                    {'player-name': 'Houston player 2', points: 1881, position: 'Power Forward'},
+                    {'player-name': 'Houston player 3', points: 1881, position: 'Small Forward'},
+                ]
+            }
+        };
+
+        $(document).ready(function(e) {
+            $("#lookup").on('click', function(){
+                var teamId = $("#team-name option:selected").val();
+                var workspace = new Workspace($('.teams'));
+                var team = new Team(teamData[teamId].name, teamData[teamId].players);
+                team.appendTo(workspace);
+            });
+
+            // retrieve all teams & populate the lookup dropdown
+            var teamController = new Core('team');
+            teamController.retrieve_all(function(result) {
+                $.each(result, (index, team) => {
+                    $("#team-name").append("<option value=" + team.TeamId + ">" + team.TeamName + "</option>");
+                });
+            } );
+
+            $('.test').click(() =>{
+                var team = new Team();
+                team.retrieve('1', (result) => {
+                    console.log(team);
+                });
+            });
+
+        });
+
+    </script>
+</head>
+<body>
+<a href="#" class="test">Test</a>
+<section class="filter">
+    <form>
+        <h1>Lookup Team</h1>
+        <select id="team-name">
+            <option value="1">Portland Trail Blazers</option>
+            <option value="2">Los Angeles Lakers</option>
+            <option value="3">Golden State Warriors</option>
+            <option value="4">Dallas Mavericks</option>
+            <option value="5">Houston Rockets</option>
+        </select>
+        <input type="button" value="Lookup" id="lookup"/>
+    </form>
+</section>
+<section class="teams">
+
+</section>
+</body>
+</html>
