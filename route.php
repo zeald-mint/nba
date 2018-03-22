@@ -25,10 +25,10 @@ $controller = Controller::load($controller);
 
 switch ($method) {
   case 'POST':
-    $action = !empty($id) ? "update" : "insert";
+    $action = $id == '' ? "insert" : "update";
     break;
   case 'GET':
-    $action = !empty($id) ? "get" : "get_all";
+    $action = $id == '' ? "get_all" : "get";
     break;
   default:
     error("Invalid request method", 400);

@@ -4,7 +4,7 @@ function Workspace($el) {
 }
 
 $.extend(Workspace.prototype, {
-    append: function(content){
+    append: function(content) {
         this.dom().append(content.dom());
     },
     dom: function() {

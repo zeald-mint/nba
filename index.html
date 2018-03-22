@@ -140,8 +140,12 @@
             $("#lookup").on('click', function(){
                 var teamId = $("#team-name option:selected").val();
                 var workspace = new Workspace($('.teams'));
-                var team = new Team(teamData[teamId].name, teamData[teamId].players);
-                team.appendTo(workspace);
+                var team = new Team().
+                    retrieve(teamId, function(team) {
+                        team.assemble().
+                            appendTo(workspace);
+                    });
+                
             });
 
             // retrieve all teams & populate the lookup dropdown

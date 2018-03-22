@@ -1,5 +1,6 @@
 function Core (controller) {
     this.controller = controller;
+    this.fields = [];
 }
 
 $.extend(Core.prototype, {
@@ -7,10 +8,8 @@ $.extend(Core.prototype, {
     retrieve: function(id, callback) {
         var route = this.controller + '/' + id;
         this.execute(route, function(record) {
-            $.each(record, function(key, value) {
-                this[key] = value;
-            }.bind(this));
-            callback(record);
+            this.set(record);
+            callback(this, record);
         }.bind(this));
     },
 
@@ -27,6 +26,12 @@ $.extend(Core.prototype, {
     insert: function(data, callback) {
         var route = this.controller + '/';
         return this.execute(route, data, callback);
+    },
+
+    set: function(data) {
+        $.each(this.fields, (index, property) => {
+            this[property] = data[property];
+        });
     },
 
     /**

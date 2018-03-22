@@ -1,17 +1,7 @@
 function Team(name, rosterData) {
     this.controller = 'team';
-    this.name = name;
     this.template = new Template('template-team');
-    this.$el = this.assemble();
-
-    // build the roster
-    this.roster = [];
-    $.each(rosterData, (index, playerData) => {
-        var player = new Player(playerData['player-name'], playerData.position, playerData.points);
-        this.roster.push(player);
-    });
-
-    this.assembleRoster();
+    this.fields = [ 'TeamId', 'TeamName'];
 }
 
 // set this object to inherit from core
@@ -21,14 +11,16 @@ Team.prototype.constructor = Team;
 $.extend(Team.prototype, {
     // assigns the data to the template
     assemble: function() {
-        return this.template.
-        assign({
-            'team-name': this.name,
-        }).
-        assemble();
+        this.$el = this.template.
+            assign({
+                'team-name': this.TeamName,
+            }).
+            assemble();
+        return this;    
     },
     appendTo: function (workspace) {
         workspace.append(this);
+        return this;
     },
     dom: function() {
         return this.$el;
